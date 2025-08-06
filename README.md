@@ -4,7 +4,7 @@ A machine learning model that predicts departure delays for United Airlines flig
 
 ## 🌐 Live Demo
 
-Visit the live demo: [United Airlines Flight Delay Predictor](https://yourusername.github.io/your-repo-name/)
+Visit the live demo: [https://mitchellchen03.github.io/Flight_Ai/)
 
 ## 📊 Model Performance
 
@@ -219,5 +219,6 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 For questions or support, please open an issue on GitHub.
 
 ---
+
 
 **Note**: This demo uses simulated predictions for demonstration purposes. In a production environment, it would connect to the actual trained machine learning model. 
