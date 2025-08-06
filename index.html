@@ -300,10 +300,11 @@
                             <label for="departureTime">Departure Time</label>
                             <input type="time" id="departureTime" required>
                         </div>
-                        <div class="form-group">
-                            <label for="flightDate">Flight Date</label>
-                            <input type="date" id="flightDate" required>
-                        </div>
+                                        <div class="form-group">
+                    <label for="flightDate">Flight Date (January Only)</label>
+                    <input type="date" id="flightDate" required>
+                    <small style="color: #666; font-size: 0.9em;">⚠️ Model trained on January 2025 data only</small>
+                </div>
                     </div>
                 </div>
 
@@ -334,18 +335,24 @@
                 <div class="features">
                     <h4>Key Factors Considered:</h4>
                     <ul>
-                        <li>Historical delay patterns for this route</li>
+                        <li>Historical delay patterns for this route (January 2025)</li>
                         <li>Weather conditions and severity</li>
                         <li>Time of day and peak hours</li>
-                        <li>Day of week and seasonal patterns</li>
+                        <li>Day of week patterns in January</li>
                         <li>Hub connections and route complexity</li>
                     </ul>
+                    <div style="margin-top: 15px; padding: 10px; background: #f8f9fa; border-radius: 5px; font-size: 0.9em; color: #666;">
+                        <strong>Note:</strong> Model accuracy is optimized for January flights based on available training data.
+                    </div>
                 </div>
             </div>
 
             <div class="model-info">
                 <h3>Model Performance</h3>
                 <p>This prediction model uses machine learning to analyze United Airlines flight data and weather conditions to estimate departure delays.</p>
+                <div style="background: #fff3cd; border: 1px solid #ffeaa7; padding: 15px; border-radius: 8px; margin: 15px 0;">
+                    <strong>⚠️ Data Limitation:</strong> This model is trained on <strong>January 2025 United Airlines flight data only</strong>. Predictions are most accurate for flights in January.
+                </div>
                 <div class="model-stats">
                     <div class="stat">
                         <div class="stat-value">73.9%</div>
@@ -385,6 +392,14 @@
 
             if (origin === dest) {
                 alert('Origin and destination cannot be the same.');
+                return;
+            }
+            
+            // Validate January date
+            const selectedDate = new Date(flightDate);
+            const month = selectedDate.getMonth();
+            if (month !== 0) { // Not January
+                alert('⚠️ This model is trained on January 2025 data only. Please select a date in January.');
                 return;
             }
 
@@ -460,10 +475,20 @@
             resultDiv.scrollIntoView({ behavior: 'smooth' });
         }
 
-        // Set default date to tomorrow
-        const tomorrow = new Date();
-        tomorrow.setDate(tomorrow.getDate() + 1);
-        document.getElementById('flightDate').value = tomorrow.toISOString().split('T')[0];
+        // Set default date to January 2025 (model limitation)
+        const januaryDate = new Date('2025-01-15');
+        document.getElementById('flightDate').value = januaryDate.toISOString().split('T')[0];
+        
+        // Add date validation for January only
+        document.getElementById('flightDate').addEventListener('change', function() {
+            const selectedDate = new Date(this.value);
+            const month = selectedDate.getMonth(); // 0 = January
+            
+            if (month !== 0) { // Not January
+                alert('⚠️ This model is trained on January 2025 data only. Please select a date in January.');
+                this.value = januaryDate.toISOString().split('T')[0]; // Reset to January
+            }
+        });
     </script>
 </body>
 </html> 
