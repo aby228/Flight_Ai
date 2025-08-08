@@ -47,3 +47,6 @@ Thumbs.db
 
 # Logs
 *.log
+
+# Ignore Windows ADS streams
+*:Zone.Identifier
