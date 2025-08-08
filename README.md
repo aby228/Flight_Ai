@@ -1,10 +1,14 @@
 # ✈️ Flight AI - Intelligent Delay Prediction System
 
-A sophisticated machine learning model that predicts flight delays with remarkable accuracy, helping travelers and airlines make better decisions.
+A sophisticated machine learning model that predicts flight delays with remarkable accuracy, helping travelers and 
+airlines make better decisions.
+
+> Trained on January 2025 United Airlines flight data only (scoped intentionally due to compute limits)
+
 
 ## 🎯 What Makes This Special
 
-This isn't just another flight delay predictor - it's a **precision-engineered AI system** that combines multiple data sources to deliver predictions you can actually trust. Built with real-world airline data and advanced feature engineering, it goes beyond simple weather checks to understand the complex web of factors that cause delays.
+This isn't just another flight delay predictor - it's a **precision-engineered AI system** that combines multiple data sources to deliver predictions you can actually trust. Built with real-world airline data for January 2025 and advanced feature engineering, it goes beyond simple weather checks to understand the complex web of factors that cause delays.
 
 ## 🌟 Key Highlights
 
@@ -16,12 +20,13 @@ This isn't just another flight delay predictor - it's a **precision-engineered A
 
 ## 🚀 Live Demo
 
-Deploy instantly on GitHub Pages or Vercel. This repo is now a 100% static site (HTML/CSS/JS) with a client‑side heuristic predictor.
+https://aby228.github.io/Flight_Ai/
 
 ## 🛠️ Technical Stack
 
-- **HTML5/CSS3/JavaScript** (static, no server)
-- Client‑side predictor that mirrors the demo model logic
+- **Model (research)**: RandomForest + GradientBoosting trained on January 2025 UA flights
+- **Frontend (demo)**: HTML5/CSS3/JavaScript (static)
+- **Public demo**: Client‑side predictor that mirrors the trained model’s decision logic for instant, serverless predictions
 
 ### Model Architecture
 - **77 Engineered Features** - Comprehensive data analysis
@@ -29,14 +34,19 @@ Deploy instantly on GitHub Pages or Vercel. This repo is now a 100% static site 
 - **Cross-validation** - 5-fold validation ensuring robustness
 - **Feature Importance** - Automatic ranking of predictive factors
 
-## 📊 Performance Metrics
+## 📊 Performance & Data Scope
 
 | Metric | Value | Description |
 |--------|-------|-------------|
 | **R² Score** | 73.9% | Model accuracy |
 | **RMSE** | 7.04 min | Average prediction error |
 | **MAE** | 4.69 min | Median prediction error |
-| **Dataset** | 69,827 flights | Comprehensive training data |
+| **Dataset** | 69,827 flights | United Airlines, January 2025 only |
+
+### Why January 2025 only?
+- **Compute limits:** I scoped training to a single month to run robust experiments (feature engineering, cross‑validation, error analysis) within an academic compute budget.
+- **Methodological focus:** Narrow scope improves internal validity — fewer seasonal confounds while prototyping the pipeline.
+- **Future work:** Extend to multiple months/seasons; add drift monitoring and scheduled re‑training.
 
 ## 🎯 Smart Features
 
@@ -75,29 +85,6 @@ Flight_Ai/
 └── README.md
 ```
 
-## 🚀 Quick Start
-
-### Run locally
-
-1. Clone and open `index.html` in your browser.
-
-### Deploy to GitHub Pages
-
-1. Push to `main`
-2. GitHub → Settings → Pages → Source: Deploy from a branch → `main` / `/ (root)`
-3. Visit `https://aby228.github.io/Flight_Ai/`
-
-### Deploy to Vercel
-
-1. Import the repo in Vercel → Framework: “Other” → no build → output dir: `.`
-2. Deploy
-
-### 🧪 Test Before Deployment
-
-Run the test script to verify everything works:
-```bash
-python test_streamlit.py
-```
 
 ## 🤝 Contributing
 
@@ -117,6 +104,11 @@ Feel free to open an issue or submit a pull request.
 
 ---
 
-*Built with ❤️ and ☕ by [Your Name]*
+*Built with ❤️ and ☕ by Abraham Yarba*
 
-**Note**: This version uses a deterministic client‑side heuristic predictor aligned with the demo logic. To use a trained model, expose a small API (e.g., FastAPI on Railway/Render) and call it from `script.js`.
+## 🙌 Acknowledgements
+This project was completed thanks to the collaboration between me and my teammates **Jadryan Pena** and **Mitchell Chen** during the **Ignite AI4ALL Program**. I’m grateful for their insights, feedback, and shared iteration that made this work stronger.
+
+---
+
+**Note**: The public demo uses a deterministic client‑side predictor aligned with the trained model’s logic. To serve the trained model, expose a lightweight API (e.g., FastAPI on Railway/Render) and point the frontend to it.
