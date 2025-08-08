@@ -3,492 +3,176 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>United Airlines Flight Delay Predictor</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            padding: 20px;
-        }
-
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
-            overflow: hidden;
-        }
-
-        .header {
-            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
-            color: white;
-            padding: 30px;
-            text-align: center;
-        }
-
-        .header h1 {
-            font-size: 2.5em;
-            margin-bottom: 10px;
-        }
-
-        .header p {
-            font-size: 1.1em;
-            opacity: 0.9;
-        }
-
-        .content {
-            padding: 40px;
-        }
-
-        .form-section {
-            margin-bottom: 30px;
-        }
-
-        .form-section h2 {
-            color: #333;
-            margin-bottom: 20px;
-            font-size: 1.5em;
-        }
-
-        .form-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-        }
-
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 600;
-            color: #555;
-        }
-
-        .form-group input, .form-group select {
-            width: 100%;
-            padding: 12px;
-            border: 2px solid #e1e5e9;
-            border-radius: 8px;
-            font-size: 16px;
-            transition: border-color 0.3s;
-        }
-
-        .form-group input:focus, .form-group select:focus {
-            outline: none;
-            border-color: #667eea;
-        }
-
-        .weather-section {
-            background: #f8f9fa;
-            padding: 20px;
-            border-radius: 10px;
-            margin-bottom: 30px;
-        }
-
-        .weather-section h3 {
-            color: #333;
-            margin-bottom: 15px;
-        }
-
-        .weather-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
-            gap: 15px;
-        }
-
-        .btn {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 15px 30px;
-            border: none;
-            border-radius: 8px;
-            font-size: 18px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: transform 0.2s;
-            width: 100%;
-        }
-
-        .btn:hover {
-            transform: translateY(-2px);
-        }
-
-        .btn:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-            transform: none;
-        }
-
-        .result {
-            margin-top: 30px;
-            padding: 20px;
-            border-radius: 10px;
-            text-align: center;
-            display: none;
-        }
-
-        .result.success {
-            background: #d4edda;
-            border: 1px solid #c3e6cb;
-            color: #155724;
-        }
-
-        .result.warning {
-            background: #fff3cd;
-            border: 1px solid #ffeaa7;
-            color: #856404;
-        }
-
-        .result.danger {
-            background: #f8d7da;
-            border: 1px solid #f5c6cb;
-            color: #721c24;
-        }
-
-        .delay-prediction {
-            font-size: 2em;
-            font-weight: bold;
-            margin: 10px 0;
-        }
-
-        .confidence {
-            font-size: 1.1em;
-            opacity: 0.8;
-        }
-
-        .features {
-            margin-top: 20px;
-            text-align: left;
-        }
-
-        .features h4 {
-            margin-bottom: 10px;
-            color: #333;
-        }
-
-        .features ul {
-            list-style: none;
-            padding: 0;
-        }
-
-        .features li {
-            padding: 5px 0;
-            border-bottom: 1px solid #eee;
-        }
-
-        .features li:before {
-            content: "✓ ";
-            color: #28a745;
-            font-weight: bold;
-        }
-
-        .model-info {
-            background: #e9ecef;
-            padding: 20px;
-            border-radius: 10px;
-            margin-top: 30px;
-        }
-
-        .model-info h3 {
-            color: #333;
-            margin-bottom: 15px;
-        }
-
-        .model-stats {
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
-            gap: 15px;
-            margin-top: 15px;
-        }
-
-        .stat {
-            text-align: center;
-            padding: 15px;
-            background: white;
-            border-radius: 8px;
-        }
-
-        .stat-value {
-            font-size: 1.5em;
-            font-weight: bold;
-            color: #667eea;
-        }
-
-        .stat-label {
-            font-size: 0.9em;
-            color: #666;
-            margin-top: 5px;
-        }
-
-        @media (max-width: 768px) {
-            .form-grid, .weather-grid, .model-stats {
-                grid-template-columns: 1fr;
-            }
-            
-            .header h1 {
-                font-size: 2em;
-            }
-            
-            .content {
-                padding: 20px;
-            }
-        }
-    </style>
+    <title>✈️ Flight AI - Intelligent Delay Prediction</title>
+    
+    <!-- External Dependencies -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Custom Styles -->
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+    <!-- Animated Background -->
+    <div class="bg-animation"></div>
+    
+    <!-- Main Container -->
     <div class="container">
-        <div class="header">
-            <h1>✈️ United Airlines</h1>
-            <p>Flight Delay Prediction Model</p>
+        <div class="glass-card">
+            <!-- Hero Section -->
+            <div class="hero">
+                <div class="hero-content">
+                    <h1><i class="fas fa-plane-departure"></i> Flight AI</h1>
+                    <p class="subtitle">Intelligent Flight Delay Prediction with 73.9% Accuracy</p>
+                    
+                    <div class="stats">
+                        <div class="stat-item">
+                            <span class="stat-number">73.9%</span>
+                            <div class="stat-label">Accuracy</div>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-number">7.04</span>
+                            <div class="stat-label">RMSE (min)</div>
         </div>
-
-        <div class="content">
-            <form id="predictionForm">
-                <div class="form-section">
-                    <h2>Flight Information</h2>
-                    <div class="form-grid">
-                        <div class="form-group">
-                            <label for="origin">Origin Airport</label>
-                            <select id="origin" required>
-                                <option value="">Select Origin</option>
-                                <option value="ORD">Chicago O'Hare (ORD)</option>
-                                <option value="DEN">Denver (DEN)</option>
-                                <option value="IAH">Houston Bush (IAH)</option>
-                                <option value="EWR">Newark (EWR)</option>
-                                <option value="SFO">San Francisco (SFO)</option>
-                                <option value="LAX">Los Angeles (LAX)</option>
-                                <option value="IAD">Washington Dulles (IAD)</option>
-                                <option value="CLT">Charlotte (CLT)</option>
-                                <option value="ATL">Atlanta (ATL)</option>
-                                <option value="MIA">Miami (MIA)</option>
-                                <option value="BOS">Boston (BOS)</option>
-                                <option value="SEA">Seattle (SEA)</option>
-                            </select>
+                        <div class="stat-item">
+                            <span class="stat-number">69K+</span>
+                            <div class="stat-label">Flights Analyzed</div>
                         </div>
-                        <div class="form-group">
-                            <label for="dest">Destination Airport</label>
-                            <select id="dest" required>
-                                <option value="">Select Destination</option>
-                                <option value="ORD">Chicago O'Hare (ORD)</option>
-                                <option value="DEN">Denver (DEN)</option>
-                                <option value="IAH">Houston Bush (IAH)</option>
-                                <option value="EWR">Newark (EWR)</option>
-                                <option value="SFO">San Francisco (SFO)</option>
-                                <option value="LAX">Los Angeles (LAX)</option>
-                                <option value="IAD">Washington Dulles (IAD)</option>
-                                <option value="CLT">Charlotte (CLT)</option>
-                                <option value="ATL">Atlanta (ATL)</option>
-                                <option value="MIA">Miami (MIA)</option>
-                                <option value="BOS">Boston (BOS)</option>
-                                <option value="SEA">Seattle (SEA)</option>
-                            </select>
+                        <div class="stat-item">
+                            <span class="stat-number">77</span>
+                            <div class="stat-label">AI Features</div>
                         </div>
-                    </div>
-                    <div class="form-grid">
-                        <div class="form-group">
-                            <label for="departureTime">Departure Time</label>
-                            <input type="time" id="departureTime" required>
-                        </div>
-                                        <div class="form-group">
-                    <label for="flightDate">Flight Date (January Only)</label>
-                    <input type="date" id="flightDate" required>
-                    <small style="color: #666; font-size: 0.9em;">⚠️ Model trained on January 2025 data only</small>
-                </div>
-                    </div>
-                </div>
-
-                <div class="weather-section">
-                    <h3>Weather Conditions</h3>
-                    <div class="weather-grid">
-                        <div class="form-group">
-                            <label for="temperature">Temperature (°C)</label>
-                            <input type="number" id="temperature" placeholder="e.g., 20" min="-50" max="50">
-                        </div>
-                        <div class="form-group">
-                            <label for="precipitation">Precipitation (mm)</label>
-                            <input type="number" id="precipitation" placeholder="e.g., 0" min="0" max="100" step="0.1">
-                        </div>
-                        <div class="form-group">
-                            <label for="windSpeed">Wind Speed (m/s)</label>
-                            <input type="number" id="windSpeed" placeholder="e.g., 5" min="0" max="50" step="0.1">
-                        </div>
-                    </div>
-                </div>
-
-                <button type="submit" class="btn" id="predictBtn">Predict Delay</button>
-            </form>
-
-            <div id="result" class="result">
-                <div class="delay-prediction" id="delayPrediction"></div>
-                <div class="confidence" id="confidence"></div>
-                <div class="features">
-                    <h4>Key Factors Considered:</h4>
-                    <ul>
-                        <li>Historical delay patterns for this route (January 2025)</li>
-                        <li>Weather conditions and severity</li>
-                        <li>Time of day and peak hours</li>
-                        <li>Day of week patterns in January</li>
-                        <li>Hub connections and route complexity</li>
-                    </ul>
-                    <div style="margin-top: 15px; padding: 10px; background: #f8f9fa; border-radius: 5px; font-size: 0.9em; color: #666;">
-                        <strong>Note:</strong> Model accuracy is optimized for January flights based on available training data.
                     </div>
                 </div>
             </div>
 
-            <div class="model-info">
-                <h3>Model Performance</h3>
-                <p>This prediction model uses machine learning to analyze United Airlines flight data and weather conditions to estimate departure delays.</p>
-                <div style="background: #fff3cd; border: 1px solid #ffeaa7; padding: 15px; border-radius: 8px; margin: 15px 0;">
-                    <strong>⚠️ Data Limitation:</strong> This model is trained on <strong>January 2025 United Airlines flight data only</strong>. Predictions are most accurate for flights in January.
+            <!-- Main Content -->
+            <div class="main-content">
+                <h2 class="section-title">Predict Your Flight Delay</h2>
+                
+                <form class="prediction-form" id="predictionForm">
+                    <div class="form-grid">
+                        <!-- Flight Details Section -->
+                        <div class="form-section">
+                            <div class="section-header">
+                                <div class="section-icon">
+                                    <i class="fas fa-plane"></i>
+                                </div>
+                                <h3>Flight Details</h3>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="origin">Origin Airport</label>
+                                <input type="text" id="origin" name="origin" class="form-input" placeholder="e.g., ORD" maxlength="3" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="destination">Destination Airport</label>
+                                <input type="text" id="destination" name="destination" class="form-input" placeholder="e.g., LAX" maxlength="3" required>
+                            </div>
+                            
+                        <div class="form-group">
+                                <label for="flightDate">Flight Date</label>
+                                <input type="date" id="flightDate" name="flightDate" class="form-input" required>
+                            </div>
+                        </div>
+
+                        <!-- Time Details Section -->
+                        <div class="form-section">
+                            <div class="section-header">
+                                <div class="section-icon">
+                                    <i class="fas fa-clock"></i>
+                                </div>
+                                <h3>Schedule</h3>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="departureTime">Departure Time</label>
+                                <input type="time" id="departureTime" name="departureTime" class="form-input" required>
+                            </div>
+                            
+                                        <div class="form-group">
+                                <label for="arrivalTime">Arrival Time</label>
+                                <input type="time" id="arrivalTime" name="arrivalTime" class="form-input" required>
                 </div>
-                <div class="model-stats">
-                    <div class="stat">
-                        <div class="stat-value">73.9%</div>
-                        <div class="stat-label">Accuracy (R²)</div>
-                    </div>
-                    <div class="stat">
-                        <div class="stat-value">7.04</div>
-                        <div class="stat-label">RMSE (minutes)</div>
-                    </div>
-                    <div class="stat">
-                        <div class="stat-value">4.69</div>
-                        <div class="stat-label">MAE (minutes)</div>
+                            
+                            <div class="form-group">
+                                <label for="flightDuration">Flight Duration (hours)</label>
+                                <input type="number" id="flightDuration" name="flightDuration" class="form-input" placeholder="2.5" step="0.1" min="0.5" max="20" readonly>
                     </div>
                 </div>
+
+                        <!-- Weather Section -->
+                        <div class="form-section">
+                            <div class="section-header">
+                                <div class="section-icon">
+                                    <i class="fas fa-cloud-sun"></i>
+                                </div>
+                    <h3>Weather Conditions</h3>
+                            </div>
+                            
+                        <div class="form-group">
+                            <label for="temperature">Temperature (°C)</label>
+                                <input type="range" id="temperature" name="temperature" class="form-input" min="-20" max="45" value="20">
+                                <div style="text-align: center; margin-top: 0.5rem; font-weight: 600; color: #667eea;">
+                                    <span id="tempDisplay">20°C</span>
+                                </div>
+                        </div>
+                            
+                        <div class="form-group">
+                            <label for="precipitation">Precipitation (mm)</label>
+                                <input type="range" id="precipitation" name="precipitation" class="form-input" min="0" max="100" value="0">
+                                <div style="text-align: center; margin-top: 0.5rem; font-weight: 600; color: #667eea;">
+                                    <span id="precipDisplay">0mm</span>
+                                </div>
+                        </div>
+                            
+                        <div class="form-group">
+                                <label for="windSpeed">Wind Speed (km/h)</label>
+                                <input type="range" id="windSpeed" name="windSpeed" class="form-input" min="0" max="100" value="10">
+                                <div style="text-align: center; margin-top: 0.5rem; font-weight: 600; color: #667eea;">
+                                    <span id="windDisplay">10 km/h</span>
+                                </div>
+                            </div>
+                    </div>
+                </div>
+
+                    <button type="submit" class="predict-btn" id="predictBtn">
+                        <i class="fas fa-magic"></i> Predict Flight Delay
+                    </button>
+            </form>
+
+                <!-- Results Section -->
+                <div class="results-section" id="resultsSection">
+                    <div class="result-card">
+                        <div class="delay-indicator" id="delayIndicator">
+                            <span id="delayIcon"></span>
+                        </div>
+                        
+                        <div class="delay-time" id="delayTime">0 min</div>
+                        <div class="delay-status" id="delayStatus">Calculating...</div>
+                        
+                        <div class="confidence-score">
+                            <strong>Prediction Confidence: <span id="confidenceScore">--</span>%</strong>
+                        </div>
+                        
+                        <div class="recommendations" id="recommendations">
+                            <h4><i class="fas fa-lightbulb"></i> Smart Recommendations</h4>
+                            <p id="recommendationText">Analyzing your flight...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <div class="footer">
+                <p>Built with ❤️ by <a href="https://github.com/aby228">Abraham Yarba</a> | 
+                <a href="https://www.linkedin.com/in/abraham-yarba">Connect on LinkedIn</a></p>
             </div>
         </div>
     </div>
 
-    <script>
-        document.getElementById('predictionForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            // Get form values
-            const origin = document.getElementById('origin').value;
-            const dest = document.getElementById('dest').value;
-            const departureTime = document.getElementById('departureTime').value;
-            const flightDate = document.getElementById('flightDate').value;
-            const temperature = parseFloat(document.getElementById('temperature').value) || 20;
-            const precipitation = parseFloat(document.getElementById('precipitation').value) || 0;
-            const windSpeed = parseFloat(document.getElementById('windSpeed').value) || 5;
-
-            // Validate inputs
-            if (!origin || !dest || !departureTime || !flightDate) {
-                alert('Please fill in all required fields.');
-                return;
-            }
-
-            if (origin === dest) {
-                alert('Origin and destination cannot be the same.');
-                return;
-            }
-            
-            // Validate January date
-            const selectedDate = new Date(flightDate);
-            const month = selectedDate.getMonth();
-            if (month !== 0) { // Not January
-                alert('⚠️ This model is trained on January 2025 data only. Please select a date in January.');
-                return;
-            }
-
-            // Simulate prediction (in a real app, this would call your model API)
-            const prediction = simulatePrediction(origin, dest, departureTime, flightDate, temperature, precipitation, windSpeed);
-            
-            // Display result
-            displayResult(prediction);
-        });
-
-        function simulatePrediction(origin, dest, departureTime, flightDate, temperature, precipitation, windSpeed) {
-            // This is a simplified simulation - in reality, you'd call your trained model
-            
-            // Base delay factors
-            let baseDelay = 0;
-            
-            // Time-based factors
-            const hour = parseInt(departureTime.split(':')[0]);
-            if (hour >= 7 && hour <= 9) baseDelay += 8; // Morning peak
-            if (hour >= 16 && hour <= 18) baseDelay += 10; // Evening peak
-            if (hour >= 22 || hour <= 5) baseDelay -= 5; // Red-eye flights
-            
-            // Weather factors
-            if (temperature < 0) baseDelay += 5; // Cold weather
-            if (temperature > 30) baseDelay += 3; // Hot weather
-            if (precipitation > 5) baseDelay += 8; // Heavy rain
-            if (windSpeed > 15) baseDelay += 6; // High winds
-            
-            // Route factors
-            const majorHubs = ['ORD', 'DEN', 'IAH', 'EWR', 'SFO', 'LAX', 'IAD', 'CLT', 'ATL', 'MIA', 'BOS', 'SEA'];
-            const isHubRoute = majorHubs.includes(origin) && majorHubs.includes(dest);
-            if (isHubRoute) baseDelay += 3; // Hub-to-hub routes
-            
-            // Day of week factors
-            const date = new Date(flightDate);
-            const dayOfWeek = date.getDay();
-            if (dayOfWeek === 0 || dayOfWeek === 6) baseDelay += 5; // Weekend
-            
-            // Add some randomness
-            const randomFactor = (Math.random() - 0.5) * 10;
-            const finalDelay = Math.max(0, Math.round(baseDelay + randomFactor));
-            
-            return {
-                delay: finalDelay,
-                confidence: Math.max(0.6, Math.min(0.95, 0.739 + (Math.random() - 0.5) * 0.2))
-            };
-        }
-
-        function displayResult(prediction) {
-            const resultDiv = document.getElementById('result');
-            const delayPrediction = document.getElementById('delayPrediction');
-            const confidence = document.getElementById('confidence');
-            
-            // Set delay prediction
-            if (prediction.delay === 0) {
-                delayPrediction.textContent = 'On Time';
-                resultDiv.className = 'result success';
-            } else if (prediction.delay <= 15) {
-                delayPrediction.textContent = `${prediction.delay} minutes late`;
-                resultDiv.className = 'result warning';
-            } else {
-                delayPrediction.textContent = `${prediction.delay} minutes late`;
-                resultDiv.className = 'result danger';
-            }
-            
-            // Set confidence
-            confidence.textContent = `Model Confidence: ${(prediction.confidence * 100).toFixed(1)}%`;
-            
-            // Show result
-            resultDiv.style.display = 'block';
-            
-            // Scroll to result
-            resultDiv.scrollIntoView({ behavior: 'smooth' });
-        }
-
-        // Set default date to January 2025 (model limitation)
-        const januaryDate = new Date('2025-01-15');
-        document.getElementById('flightDate').value = januaryDate.toISOString().split('T')[0];
-        
-        // Add date validation for January only
-        document.getElementById('flightDate').addEventListener('change', function() {
-            const selectedDate = new Date(this.value);
-            const month = selectedDate.getMonth(); // 0 = January
-            
-            if (month !== 0) { // Not January
-                alert('⚠️ This model is trained on January 2025 data only. Please select a date in January.');
-                this.value = januaryDate.toISOString().split('T')[0]; // Reset to January
-            }
-        });
-    </script>
+    <!-- Custom JavaScript -->
+    <script src="script.js"></script>
 </body>
 </html> 

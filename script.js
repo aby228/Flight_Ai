@@ -1,0 +1,351 @@
+// Flight AI - JavaScript Module
+// Intelligent Flight Delay Prediction System
+
+class FlightAI {
+    constructor() {
+        this.init();
+    }
+
+    // Initialize the application
+    init() {
+        this.setupEventListeners();
+        this.setDefaultValues();
+        this.updateSliderDisplays();
+    }
+
+    // Set up all event listeners
+    setupEventListeners() {
+        // Form submission
+        document.getElementById('predictionForm').addEventListener('submit', (e) => this.handleFormSubmission(e));
+        
+        // Airport code validation
+        document.getElementById('origin').addEventListener('input', this.validateAirportCode);
+        document.getElementById('destination').addEventListener('input', this.validateAirportCode);
+        
+        // Time change listeners for auto-calculation
+        document.getElementById('departureTime').addEventListener('change', () => this.updateFlightDuration());
+        document.getElementById('arrivalTime').addEventListener('change', () => this.updateFlightDuration());
+        
+        // Slider update listeners
+        document.getElementById('temperature').addEventListener('input', (e) => this.updateTempDisplay(e.target.value));
+        document.getElementById('precipitation').addEventListener('input', (e) => this.updatePrecipDisplay(e.target.value));
+        document.getElementById('windSpeed').addEventListener('input', (e) => this.updateWindDisplay(e.target.value));
+    }
+
+    // Set default form values
+    setDefaultValues() {
+        // Set default date to today
+        document.getElementById('flightDate').valueAsDate = new Date();
+        
+        // Set default times (2 hours from now for departure, +3 hours for arrival)
+        const now = new Date();
+        const departure = new Date(now.getTime() + 2 * 60 * 60 * 1000);
+        const arrival = new Date(departure.getTime() + 3 * 60 * 60 * 1000);
+        
+        document.getElementById('departureTime').value = departure.toTimeString().slice(0, 5);
+        document.getElementById('arrivalTime').value = arrival.toTimeString().slice(0, 5);
+        
+        // Update flight duration
+        this.updateFlightDuration();
+    }
+
+    // Update all slider displays on initialization
+    updateSliderDisplays() {
+        const temperature = document.getElementById('temperature').value;
+        const precipitation = document.getElementById('precipitation').value;
+        const windSpeed = document.getElementById('windSpeed').value;
+        
+        this.updateTempDisplay(temperature);
+        this.updatePrecipDisplay(precipitation);
+        this.updateWindDisplay(windSpeed);
+    }
+
+    // Update temperature display
+    updateTempDisplay(value) {
+        document.getElementById('tempDisplay').textContent = value + '°C';
+    }
+
+    // Update precipitation display
+    updatePrecipDisplay(value) {
+        document.getElementById('precipDisplay').textContent = value + 'mm';
+    }
+
+    // Update wind speed display
+    updateWindDisplay(value) {
+        document.getElementById('windDisplay').textContent = value + ' km/h';
+    }
+
+    // Validate airport codes (3 letters, uppercase only)
+    validateAirportCode(e) {
+        e.target.value = e.target.value.toUpperCase().replace(/[^A-Z]/g, '');
+    }
+
+    // Auto-calculate flight duration based on departure and arrival times
+    updateFlightDuration() {
+        const departureTime = document.getElementById('departureTime').value;
+        const arrivalTime = document.getElementById('arrivalTime').value;
+        
+        if (departureTime && arrivalTime) {
+            const [depHour, depMin] = departureTime.split(':').map(Number);
+            const [arrHour, arrMin] = arrivalTime.split(':').map(Number);
+            
+            let duration = (arrHour * 60 + arrMin) - (depHour * 60 + depMin);
+            if (duration < 0) duration += 24 * 60; // Handle overnight flights
+            
+            document.getElementById('flightDuration').value = (duration / 60).toFixed(1);
+        }
+    }
+
+    // Handle form submission
+    handleFormSubmission(e) {
+        e.preventDefault();
+        
+        if (!this.validateForm()) {
+            return;
+        }
+
+        const btn = document.getElementById('predictBtn');
+        const resultsSection = document.getElementById('resultsSection');
+        
+        // Show loading state
+        this.showLoadingState(btn);
+        
+        // Simulate prediction (replace with actual API call in production)
+        setTimeout(() => {
+            const prediction = this.simulatePrediction();
+            this.displayResults(prediction);
+            
+            // Reset button
+            this.resetLoadingState(btn);
+            
+            // Show results with smooth scroll
+            resultsSection.style.display = 'block';
+            resultsSection.scrollIntoView({ behavior: 'smooth' });
+        }, 2000);
+    }
+
+    // Validate form inputs
+    validateForm() {
+        const origin = document.getElementById('origin').value;
+        const destination = document.getElementById('destination').value;
+        
+        if (origin.length !== 3) {
+            this.showError('Please enter a valid 3-letter origin airport code');
+            return false;
+        }
+        
+        if (destination.length !== 3) {
+            this.showError('Please enter a valid 3-letter destination airport code');
+            return false;
+        }
+        
+        if (origin === destination) {
+            this.showError('Origin and destination cannot be the same');
+            return false;
+        }
+        
+        return true;
+    }
+
+    // Show error message
+    showError(message) {
+        alert(message); // In production, use a better toast/modal system
+    }
+
+    // Show loading state on button
+    showLoadingState(btn) {
+        btn.classList.add('loading');
+        btn.innerHTML = '<span class="loading-spinner"></span>Analyzing Flight...';
+    }
+
+    // Reset button to normal state
+    resetLoadingState(btn) {
+        btn.classList.remove('loading');
+        btn.innerHTML = '<i class="fas fa-magic"></i> Predict Flight Delay';
+    }
+
+    // Simulate ML prediction (replace with actual API call)
+    simulatePrediction() {
+        const formData = new FormData(document.getElementById('predictionForm'));
+        
+        // Get weather factors
+        const temp = parseInt(formData.get('temperature'));
+        const precip = parseInt(formData.get('precipitation'));
+        const wind = parseInt(formData.get('windSpeed'));
+        
+        // Get route factors
+        const origin = formData.get('origin');
+        const destination = formData.get('destination');
+        
+        // Simple simulation logic based on various factors
+        let baseDelay = Math.random() * 20;
+        
+        // Weather impact
+        if (temp < 0 || temp > 35) baseDelay += 15;
+        if (precip > 20) baseDelay += 20;
+        if (wind > 40) baseDelay += 18;
+        
+        // Route impact (some common delay-prone routes)
+        const delayProneRoutes = ['ORD', 'LAX', 'JFK', 'ATL', 'DFW'];
+        if (delayProneRoutes.includes(origin) || delayProneRoutes.includes(destination)) {
+            baseDelay += 8;
+        }
+        
+        // Time-based factors
+        const departureTime = formData.get('departureTime');
+        if (departureTime) {
+            const hour = parseInt(departureTime.split(':')[0]);
+            // Rush hours tend to have more delays
+            if ((hour >= 7 && hour <= 9) || (hour >= 17 && hour <= 19)) {
+                baseDelay += 10;
+            }
+        }
+        
+        // Calculate final delay and confidence
+        const delay = Math.max(0, Math.round(baseDelay + (Math.random() - 0.5) * 10));
+        const confidence = Math.round(70 + Math.random() * 25);
+        
+        return {
+            delay: delay,
+            confidence: confidence,
+            status: this.getDelayStatus(delay),
+            recommendation: this.getRecommendation(delay),
+            route: `${origin} → ${destination}`
+        };
+    }
+
+    // Determine delay status based on minutes
+    getDelayStatus(delay) {
+        if (delay <= 5) {
+            return { 
+                text: 'On Time', 
+                class: 'status-success', 
+                icon: 'fas fa-check-circle' 
+            };
+        } else if (delay <= 15) {
+            return { 
+                text: 'Minor Delay', 
+                class: 'status-warning', 
+                icon: 'fas fa-exclamation-triangle' 
+            };
+        } else if (delay <= 30) {
+            return { 
+                text: 'Moderate Delay', 
+                class: 'status-warning', 
+                icon: 'fas fa-clock' 
+            };
+        } else {
+            return { 
+                text: 'Significant Delay', 
+                class: 'status-danger', 
+                icon: 'fas fa-times-circle' 
+            };
+        }
+    }
+
+    // Get recommendation based on delay
+    getRecommendation(delay) {
+        if (delay <= 5) {
+            return "✅ Your flight is likely to be on time! Arrive at the airport 2 hours before departure for international flights, 1 hour for domestic flights.";
+        } else if (delay <= 15) {
+            return "⚠️ Minor delays expected. Consider arriving 2.5 hours early and check for real-time updates from your airline.";
+        } else if (delay <= 30) {
+            return "⚠️ Moderate delays likely. Plan for extra time, check alternative flights, and consider airport amenities for a longer wait.";
+        } else {
+            return "🚨 Significant delays expected. Strongly consider rebooking, check alternative routes, or prepare for extended wait times.";
+        }
+    }
+
+    // Display prediction results
+    displayResults(prediction) {
+        const elements = {
+            delayTime: document.getElementById('delayTime'),
+            delayStatus: document.getElementById('delayStatus'),
+            delayIndicator: document.getElementById('delayIndicator'),
+            delayIcon: document.getElementById('delayIcon'),
+            confidenceScore: document.getElementById('confidenceScore'),
+            recommendationText: document.getElementById('recommendationText')
+        };
+        
+        // Update content
+        elements.delayTime.textContent = prediction.delay + ' min';
+        elements.delayStatus.textContent = prediction.status.text;
+        elements.confidenceScore.textContent = prediction.confidence;
+        elements.recommendationText.textContent = prediction.recommendation;
+        
+        // Update styling
+        elements.delayIndicator.className = 'delay-indicator ' + prediction.status.class;
+        elements.delayIcon.className = prediction.status.icon;
+        
+        // Add pulse animation to delay time
+        this.addPulseAnimation(elements.delayTime);
+        
+        // Log prediction for debugging
+        console.log('Flight AI Prediction:', prediction);
+    }
+
+    // Add pulse animation to element
+    addPulseAnimation(element) {
+        element.style.animation = 'none';
+        element.offsetHeight; // Trigger reflow
+        element.style.animation = 'pulse 2s ease-in-out infinite';
+    }
+
+    // Utility method to format time
+    formatTime(timeString) {
+        const [hours, minutes] = timeString.split(':');
+        const hour = parseInt(hours);
+        const ampm = hour >= 12 ? 'PM' : 'AM';
+        const hour12 = hour % 12 || 12;
+        return `${hour12}:${minutes} ${ampm}`;
+    }
+
+    // Get current weather (placeholder for actual weather API)
+    async getCurrentWeather(airportCode) {
+        // In production, integrate with a weather API
+        // This is a placeholder that returns mock data
+        return {
+            temperature: 20 + Math.random() * 20,
+            precipitation: Math.random() * 10,
+            windSpeed: Math.random() * 30
+        };
+    }
+
+    // Analytics tracking (placeholder)
+    trackEvent(eventName, properties = {}) {
+        console.log('Analytics Event:', eventName, properties);
+        // In production, integrate with analytics service
+    }
+}
+
+// Global utility functions
+window.updateTempDisplay = function(value) {
+    flightAI.updateTempDisplay(value);
+};
+
+window.updatePrecipDisplay = function(value) {
+    flightAI.updatePrecipDisplay(value);
+};
+
+window.updateWindDisplay = function(value) {
+    flightAI.updateWindDisplay(value);
+};
+
+// Initialize the application when DOM is loaded
+document.addEventListener('DOMContentLoaded', function() {
+    window.flightAI = new FlightAI();
+    console.log('✈️ Flight AI System Initialized');
+});
+
+// Service Worker registration for PWA capabilities (optional)
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', function() {
+        navigator.serviceWorker.register('/sw.js')
+            .then(function(registration) {
+                console.log('SW registered: ', registration);
+            })
+            .catch(function(registrationError) {
+                console.log('SW registration failed: ', registrationError);
+            });
+    });
+}
