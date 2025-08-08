@@ -16,15 +16,12 @@ This isn't just another flight delay predictor - it's a **precision-engineered A
 
 ## 🚀 Live Demo
 
-Experience the power of AI-driven flight predictions: [Demo Coming Soon]
+Deploy instantly on GitHub Pages or Vercel. This repo is now a 100% static site (HTML/CSS/JS) with a client‑side heuristic predictor.
 
-## 🛠️ Technical Excellence
+## 🛠️ Technical Stack
 
-### Core Technology Stack
-- **Python 3.9+** - Robust backend processing
-- **Scikit-learn** - Advanced ML algorithms (RandomForest + GradientBoosting)
-- **Pandas & NumPy** - High-performance data manipulation
-- **HTML5/CSS3/JavaScript** - Modern, responsive frontend
+- **HTML5/CSS3/JavaScript** (static, no server)
+- Client‑side predictor that mirrors the demo model logic
 
 ### Model Architecture
 - **77 Engineered Features** - Comprehensive data analysis
@@ -72,74 +69,28 @@ This project represents my passion for **practical AI applications** that solve 
 
 ```
 Flight_Ai/
-├── streamlit_app.py             # 🚀 Main Streamlit web application
-├── united_airlines_enhanced_model.py  # Core ML implementation
-├── index.html                   # Interactive HTML demo interface
-├── simple_flow_diagram.py       # System architecture visualization
-├── test_streamlit.py            # 🧪 Deployment testing script
-├── DEPLOYMENT_GUIDE.md          # 📚 Complete deployment guide
-├── requirements.txt             # Python dependencies
-└── README.md                   # This file
+├── index.html         # UI
+├── styles.css         # Styling
+├── script.js          # Client-side predictor & logic
+└── README.md
 ```
 
 ## 🚀 Quick Start
 
-### Option 1: Streamlit Web App (Recommended)
+### Run locally
 
-1. **Clone the repository**
-   ```bash
-   git clone https://github.com/aby228/Flight_Ai.git
-   cd Flight_Ai
-   ```
+1. Clone and open `index.html` in your browser.
 
-2. **Install dependencies**
-   ```bash
-   pip install -r requirements.txt
-   ```
+### Deploy to GitHub Pages
 
-3. **Run the Streamlit app**
-   ```bash
-   streamlit run streamlit_app.py
-   ```
+1. Push to `main`
+2. GitHub → Settings → Pages → Source: Deploy from a branch → `main` / `/ (root)`
+3. Visit `https://aby228.github.io/Flight_Ai/`
 
-4. **Access the web interface**
-   - Open your browser to `http://localhost:8501`
-   - Experience the interactive Flight AI prediction system
+### Deploy to Vercel
 
-### Option 2: Local HTML Demo
-
-1. **Install dependencies**
-   ```bash
-   pip install -r requirements.txt
-   ```
-
-2. **Run the model**
-   ```bash
-   python united_airlines_enhanced_model.py
-   ```
-
-3. **Open the demo**
-   - Open `index.html` in your browser
-   - Experience the interactive prediction system
-
-### Option 3: Deploy to Streamlit Cloud
-
-1. **Push to GitHub**
-   ```bash
-   git add .
-   git commit -m "Initial commit"
-   git push origin main
-   ```
-
-2. **Deploy on Streamlit Cloud**
-   - Visit [share.streamlit.io](https://share.streamlit.io)
-   - Connect your GitHub repository
-   - Set main file to `streamlit_app.py`
-   - Deploy!
-
-3. **Share your app**
-   - Get a public URL like: `https://flight-ai-aby228.streamlit.app`
-   - Share with users worldwide!
+1. Import the repo in Vercel → Framework: “Other” → no build → output dir: `.`
+2. Deploy
 
 ### 🧪 Test Before Deployment
 
@@ -168,4 +119,4 @@ Feel free to open an issue or submit a pull request.
 
 *Built with ❤️ and ☕ by [Your Name]*
 
-**Note**: This demo uses simulated predictions for demonstration. In production, it connects to the actual trained machine learning model for real-time predictions. 
+**Note**: This version uses a deterministic client‑side heuristic predictor aligned with the demo logic. To use a trained model, expose a small API (e.g., FastAPI on Railway/Render) and call it from `script.js`.

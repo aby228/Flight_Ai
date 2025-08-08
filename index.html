@@ -44,7 +44,7 @@
                         </div>
                     </div>
                 </div>
-            </div>
+        </div>
 
             <!-- Main Content -->
             <div class="main-content">
@@ -53,7 +53,7 @@
                 <form class="prediction-form" id="predictionForm">
                     <div class="form-grid">
                         <!-- Flight Details Section -->
-                        <div class="form-section">
+                <div class="form-section">
                             <div class="section-header">
                                 <div class="section-icon">
                                     <i class="fas fa-plane"></i>
@@ -61,21 +61,22 @@
                                 <h3>Flight Details</h3>
                             </div>
                             
-                            <div class="form-group">
-                                <label for="origin">Origin Airport</label>
+                        <div class="form-group">
+                            <label for="origin">Origin Airport</label>
                                 <input type="text" id="origin" name="origin" class="form-input" placeholder="e.g., ORD" maxlength="3" required>
                             </div>
                             
                             <div class="form-group">
                                 <label for="destination">Destination Airport</label>
                                 <input type="text" id="destination" name="destination" class="form-input" placeholder="e.g., LAX" maxlength="3" required>
-                            </div>
-                            
-                        <div class="form-group">
-                                <label for="flightDate">Flight Date</label>
-                                <input type="date" id="flightDate" name="flightDate" class="form-input" required>
-                            </div>
                         </div>
+                            
+                            <div class="form-group">
+                                <label for="flightDate">Flight Date</label>
+                                <input type="date" id="flightDate" name="flightDate" class="form-input" required min="2025-01-01" max="2025-01-31">
+                                <small style="display:block;margin-top:6px;color:#667eea;font-weight:600">Only dates in January 2025 are supported.</small>
+                            </div>
+                    </div>
 
                         <!-- Time Details Section -->
                         <div class="form-section">
@@ -86,10 +87,10 @@
                                 <h3>Schedule</h3>
                             </div>
                             
-                            <div class="form-group">
-                                <label for="departureTime">Departure Time</label>
+                        <div class="form-group">
+                            <label for="departureTime">Departure Time</label>
                                 <input type="time" id="departureTime" name="departureTime" class="form-input" required>
-                            </div>
+                        </div>
                             
                                         <div class="form-group">
                                 <label for="arrivalTime">Arrival Time</label>
@@ -133,7 +134,7 @@
                                 <div style="text-align: center; margin-top: 0.5rem; font-weight: 600; color: #667eea;">
                                     <span id="windDisplay">10 km/h</span>
                                 </div>
-                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -147,22 +148,22 @@
                     <div class="result-card">
                         <div class="delay-indicator" id="delayIndicator">
                             <span id="delayIcon"></span>
-                        </div>
+                    </div>
                         
                         <div class="delay-time" id="delayTime">0 min</div>
                         <div class="delay-status" id="delayStatus">Calculating...</div>
                         
                         <div class="confidence-score">
                             <strong>Prediction Confidence: <span id="confidenceScore">--</span>%</strong>
-                        </div>
-                        
+            </div>
+
                         <div class="recommendations" id="recommendations">
                             <h4><i class="fas fa-lightbulb"></i> Smart Recommendations</h4>
                             <p id="recommendationText">Analyzing your flight...</p>
-                        </div>
-                    </div>
                 </div>
             </div>
+        </div>
+    </div>
 
             <!-- Footer -->
             <div class="footer">
@@ -173,6 +174,7 @@
     </div>
 
     <!-- Custom JavaScript -->
+    <script src="config.js"></script>
     <script src="script.js"></script>
 </body>
 </html> 

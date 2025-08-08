@@ -34,8 +34,11 @@ class FlightAI {
 
     // Set default form values
     setDefaultValues() {
-        // Set default date to today
-        document.getElementById('flightDate').valueAsDate = new Date();
+        // Restrict date to January 2025 and default to a valid date (2025-01-15)
+        const dateInput = document.getElementById('flightDate');
+        dateInput.min = '2025-01-01';
+        dateInput.max = '2025-01-31';
+        dateInput.value = '2025-01-15';
         
         // Set default times (2 hours from now for departure, +3 hours for arrival)
         const now = new Date();
@@ -97,7 +100,7 @@ class FlightAI {
     }
 
     // Handle form submission
-    handleFormSubmission(e) {
+    async handleFormSubmission(e) {
         e.preventDefault();
         
         if (!this.validateForm()) {
@@ -110,18 +113,25 @@ class FlightAI {
         // Show loading state
         this.showLoadingState(btn);
         
-        // Simulate prediction (replace with actual API call in production)
-        setTimeout(() => {
-            const prediction = this.simulatePrediction();
+        try {
+            let prediction;
+            if (typeof API_URL === 'string' && API_URL.trim().length > 0) {
+                prediction = await this.predictServerSide();
+            } else {
+                prediction = this.predictClientSide();
+            }
+
             this.displayResults(prediction);
-            
+        } catch (err) {
+            console.error('Prediction error:', err);
+            this.showError('Prediction failed. Please try again.');
+        } finally {
             // Reset button
             this.resetLoadingState(btn);
-            
             // Show results with smooth scroll
             resultsSection.style.display = 'block';
             resultsSection.scrollIntoView({ behavior: 'smooth' });
-        }, 2000);
+        }
     }
 
     // Validate form inputs
@@ -164,50 +174,107 @@ class FlightAI {
         btn.innerHTML = '<i class="fas fa-magic"></i> Predict Flight Delay';
     }
 
-    // Simulate ML prediction (replace with actual API call)
-    simulatePrediction() {
+    // Client-side heuristic predictor (mirrors demo model logic)
+    predictClientSide() {
         const formData = new FormData(document.getElementById('predictionForm'));
-        
-        // Get weather factors
-        const temp = parseInt(formData.get('temperature'));
-        const precip = parseInt(formData.get('precipitation'));
-        const wind = parseInt(formData.get('windSpeed'));
-        
-        // Get route factors
-        const origin = formData.get('origin');
-        const destination = formData.get('destination');
-        
-        // Simple simulation logic based on various factors
-        let baseDelay = Math.random() * 20;
-        
-        // Weather impact
-        if (temp < 0 || temp > 35) baseDelay += 15;
-        if (precip > 20) baseDelay += 20;
-        if (wind > 40) baseDelay += 18;
-        
-        // Route impact (some common delay-prone routes)
-        const delayProneRoutes = ['ORD', 'LAX', 'JFK', 'ATL', 'DFW'];
-        if (delayProneRoutes.includes(origin) || delayProneRoutes.includes(destination)) {
-            baseDelay += 8;
-        }
-        
-        // Time-based factors
-        const departureTime = formData.get('departureTime');
-        if (departureTime) {
-            const hour = parseInt(departureTime.split(':')[0]);
-            // Rush hours tend to have more delays
-            if ((hour >= 7 && hour <= 9) || (hour >= 17 && hour <= 19)) {
-                baseDelay += 10;
+        const origin = (formData.get('origin') || '').toUpperCase();
+        const destination = (formData.get('destination') || '').toUpperCase();
+        const dateStr = formData.get('flightDate');
+        const depTime = formData.get('departureTime');
+
+        // Weather factors
+        const tempC = Number(formData.get('temperature')) || 0; // °C
+        const precipMm = Number(formData.get('precipitation')) || 0; // mm
+        const windKmh = Number(formData.get('windSpeed')) || 0; // km/h (UI)
+        const windMps = windKmh / 3.6; // convert to m/s to mirror backend logic
+
+        let delay = 5.0; // base
+
+        // Peak-hour contribution from departure time
+        if (depTime) {
+            const hour = parseInt(depTime.split(':')[0], 10);
+            if ((hour >= 7 && hour <= 9) || (hour >= 16 && hour <= 18)) {
+                delay += 10.0;
             }
         }
-        
-        // Calculate final delay and confidence
-        const delay = Math.max(0, Math.round(baseDelay + (Math.random() - 0.5) * 10));
-        const confidence = Math.round(70 + Math.random() * 25);
-        
+
+        // Weather impacts similar to backend demo
+        if (Math.abs(tempC - 20) > 15) delay += 5.0;
+        if (precipMm > 5) delay += 8.0;
+        if (windMps > 10) delay += 7.0;
+
+        // Hub/route heuristic
+        const hubs = ['ORD','DEN','IAH','EWR','SFO','LAX','IAD'];
+        if (hubs.includes(origin) || hubs.includes(destination)) delay += 3.0;
+        if (hubs.includes(origin) && hubs.includes(destination)) delay += 2.0;
+
+        // January constraint check (UI already enforces; double-check)
+        if (dateStr) {
+            const d = new Date(dateStr);
+            if (!(d.getUTCFullYear() === 2025 && d.getUTCMonth() === 0)) {
+                // Not January 2025
+                delay += 5.0;
+            }
+        }
+
+        // Clamp and round
+        delay = Math.max(0, Math.round(delay));
+        const confidence = 85; // fixed to mirror backend demo
+
         return {
-            delay: delay,
-            confidence: confidence,
+            delay,
+            confidence,
+            status: this.getDelayStatus(delay),
+            recommendation: this.getRecommendation(delay),
+            route: `${origin} → ${destination}`
+        };
+    }
+
+    // Server-side prediction via API_URL
+    async predictServerSide() {
+        const formData = new FormData(document.getElementById('predictionForm'));
+
+        const origin = (formData.get('origin') || '').toUpperCase();
+        const destination = (formData.get('destination') || '').toUpperCase();
+        const dateStr = formData.get('flightDate');
+        const depTime = formData.get('departureTime');
+        const arrTime = formData.get('arrivalTime');
+        const tempC = Number(formData.get('temperature')) || 0;
+        const precipMm = Number(formData.get('precipitation')) || 0;
+        const windKmh = Number(formData.get('windSpeed')) || 0;
+        const windMps = windKmh / 3.6;
+
+        const toMinutes = (hhmm) => {
+            const [h, m] = (hhmm || '00:00').split(':').map(Number);
+            return (h * 60) + m;
+        };
+
+        const body = {
+            Origin: origin,
+            Dest: destination,
+            FlightDate: dateStr,
+            CRSDepTime: toMinutes(depTime),
+            CRSArrTime: toMinutes(arrTime),
+            temperature_c: tempC,
+            precip_mm: precipMm,
+            cloud_pct: 0,
+            wind_speed_mps: windMps
+        };
+
+        const resp = await fetch(`${API_URL.replace(/\/$/, '')}/predict`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(body)
+        });
+        if (!resp.ok) throw new Error(`API ${resp.status}`);
+        const data = await resp.json();
+        if (data.status !== 'success') throw new Error(data.error || 'Prediction failed');
+
+        const delay = Math.max(0, Math.round(Number(data.predicted_delay) || 0));
+        const confidence = Math.round((Number(data.confidence) || 0.85) * 100);
+        return {
+            delay,
+            confidence,
             status: this.getDelayStatus(delay),
             recommendation: this.getRecommendation(delay),
             route: `${origin} → ${destination}`
