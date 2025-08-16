@@ -20,7 +20,7 @@ This isn't just another flight delay predictor - it's a **precision-engineered A
 
 ## 🚀 Live Demo
 
-https://aby228.github.io/Flight_Ai/
+https://aby228.github.io/Flight_AI/
 
 ## 🛠️ Technical Stack
 
